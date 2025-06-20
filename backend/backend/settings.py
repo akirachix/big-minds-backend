@@ -37,9 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< Updated upstream
     'order',
     'product',
     'users',
+=======
+    'payment',
+>>>>>>> Stashed changes
 ]
 
 MIDDLEWARE = [
@@ -78,7 +82,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': BASE_DIR/'postgres',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',
