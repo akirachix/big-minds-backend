@@ -2,12 +2,19 @@
 This repository contains the backend code for an online grocery platform, built using Django. The backend is responsible for managing user accounts, product listings, orders, payments, and all business logic necessary for running a modern online grocery store.
 ## Features
 **User Authentication**: Secure registration, login, and password management for customers and admins.
+
 **Product Management**: CRUD operations for grocery products, categories, and inventory tracking.
+
 **Order Processing**: Customers can place orders, view order history, and track order status.
+
 **Cart Functionality**: Add, remove, and manage items in a shopping cart.
+
 **Payment Integration**: Support for various payment methods (can be customized based on requirements).
+
 **Admin Dashboard**: Manage products, view orders, update inventory, and analyze sales.
+
 **API Endpoints**: RESTful APIs for frontend or mobile app consumption.
+
 ## Tech Stack
 **Backend Framework**: Django (Python)
 **Database**: PostgreSQL
