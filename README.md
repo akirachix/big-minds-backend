@@ -10,9 +10,9 @@ This repository contains the backend code for an online grocery platform, built 
 - **API Endpoints**: RESTful APIs for frontend or mobile app consumption.
 
 ## Tech Stack
-**Backend Framework**: Django (Python)
-**Database**: PostgreSQL
-**API**: Django REST Framework
+- **Backend Framework**: Django (Python)
+- **Database**: PostgreSQL
+- **API**: Django REST Framework
 ## Getting Started
 ### Prerequisite
 - Python 3.9+
