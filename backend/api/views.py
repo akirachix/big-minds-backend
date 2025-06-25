@@ -1,5 +1,19 @@
 
 from rest_framework import viewsets
+from .models import Payment
+from .serializers import PaymentSerializer
+from .models import Order
+from .serializers import OrderSerializer
+class PaymentViewSet(viewsets.ModelViewSet):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+
+from rest_framework import viewsets
 from .models import Product, VendorProduct
 from .serializers import ProductSerializer, VendorProductSerializer
 
@@ -29,4 +43,3 @@ class CartViewSet(viewsets.ModelViewSet):
 class CartItemViewSet(viewsets.ModelViewSet):
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
-

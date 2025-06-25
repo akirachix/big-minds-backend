@@ -1,7 +1,8 @@
 from django.db import models
 from users.models import Vendor
+from django.db import models
 
-
+  
 class Product(models.Model):
    product_id = models.AutoField(primary_key=True)
    name = models.CharField(max_length=100)

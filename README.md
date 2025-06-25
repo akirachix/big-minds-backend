@@ -1,6 +1,9 @@
 
 # Safi Green Backend Setup
 
+
+# Safi Green Backend Setup
+
 # Safi Green Backend setup
 This repository contains the backend code for Safi Greens, built using Django. The backend is responsible for managing user accounts, product listings, orders, payments, and all business logic necessary for running a modern online grocery store.
 ## Features
@@ -11,6 +14,7 @@ This repository contains the backend code for Safi Greens, built using Django. T
 - **Payment Integration**: Support for various payment methods (can be customized based on requirements).
 - **Admin Dashboard**: Manage products, view orders, update inventory, and analyze sales.
 - **API Endpoints**: RESTful APIs for frontend or mobile app consumption.
+
 
 
 ## Tech Stack
