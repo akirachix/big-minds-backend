@@ -37,13 +37,34 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'product',
+    'users',
+    'api',
+    'rest_framework',
+
+
+    'user',
+    'cart',
+    'rest_framework',
+    'api',
+    'products',
+    
+
+
+    'subscriptions',
+
     'order',
     'product',
     'api',
     'payments',
     'rest_framework',
     'users',
+    'payment',
+    'cart',
+
+
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -70,6 +91,7 @@ TEMPLATES = [
             ],
         },
     },
+    
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
@@ -79,10 +101,15 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
+
     'default': {
+
+ 'default': {
+
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+
 }
 
 

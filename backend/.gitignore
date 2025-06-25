@@ -1,6 +1,8 @@
+
 env/
 __pycache__/
 *.pyc
+
 db.sqlite3
 env/
 __pycache__/
@@ -9,4 +11,6 @@ db.sqlite3
 env/
 __pycache__/
 *.pyc
-db.sqlite3
+
+
+ feature/api
