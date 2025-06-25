@@ -1,3 +1,7 @@
+from django.contrib import admin
+from .models import SubscriptionBox, ScheduledItem
+
+
 class ScheduledItemInline(admin.TabularInline):
    model = ScheduledItem
    extra = 1

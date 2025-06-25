@@ -1,3 +1,15 @@
+from django.db import models
+from users.models import Buyer, Vendor
+from product.models import Product
+
+
+FREQUENCY_CHOICES = [
+    ('weekly', 'Weekly'),
+    ('monthly', 'Monthly'),
+    ('Twice a week', 'twice a week'),
+]
+frequency = models.CharField( max_length=20, choices=FREQUENCY_CHOICES, default='monthly' )
+
 class SubscriptionBox(models.Model):
    schedule_id = models.AutoField(primary_key=True)
    buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE, related_name='subscriptions')
@@ -13,10 +25,11 @@ class SubscriptionBox(models.Model):
        return f"Subscription {self.name} for {self.buyer.name}"
 
 
+
 UNIT_CHOICES = [
    ('kg', 'Kg'),
    ('bunch', 'Bunch'),
-   # Add more as needed
+  
 ]
 
 
