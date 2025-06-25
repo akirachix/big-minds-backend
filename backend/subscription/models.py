@@ -1,6 +1,6 @@
 from django.db import models
 from users.models import Buyer, Vendor
-from product.models import Product
+from products.models import Product
 
 
 
@@ -15,8 +15,8 @@ frequency = models.CharField( max_length=20, choices=FREQUENCY_CHOICES, default=
 
 class SubscriptionBox(models.Model):
   schedule_id = models.AutoField(primary_key=True)
-#   buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE, related_name='subscriptions')
-#   vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='subscriptions')
+  buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE, related_name='subscriptions')
+  vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='subscriptions')
   name = models.CharField(max_length=100)
   frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES)
   price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -30,22 +30,15 @@ class SubscriptionBox(models.Model):
       return f"Subscription {self.name} for {self.buyer.name}"
 
 
-
-
-
-
 UNIT_CHOICES = [
   ('kg', 'Kg'),
   ('bunch', 'Bunch'),
  ]
 
-
-
-
 class ScheduledItem(models.Model):
   scheduled_item_id = models.AutoField(primary_key=True)
-#   product = models.ForeignKey(Product, on_delete=models.CASCADE)
-#   schedule = models.ForeignKey(SubscriptionBox, on_delete=models.CASCADE, related_name='scheduled_items')
+  product = models.ForeignKey(Product, on_delete=models.CASCADE)
+  schedule = models.ForeignKey(SubscriptionBox, on_delete=models.CASCADE, related_name='scheduled_items')
   price_per_unit = models.DecimalField(max_digits=10, decimal_places=2)
   quantity = models.IntegerField()
   unit = models.CharField(max_length=10, choices=UNIT_CHOICES)
