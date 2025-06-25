@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'product',
+    'users',
+    'api',
+    'rest_framework',
+
 
     'user',
     'cart',
@@ -83,6 +88,7 @@ TEMPLATES = [
             ],
         },
     },
+    
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'

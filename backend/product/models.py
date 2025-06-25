@@ -12,8 +12,6 @@ class Product(models.Model):
 
    def __str__(self):
        return self.name
-
-
 class VendorProduct(models.Model):
    product_details_id = models.AutoField(primary_key=True)
    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="vendor_products")
