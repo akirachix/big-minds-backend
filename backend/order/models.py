@@ -24,5 +24,5 @@ class OrderItem(models.Model):
     price_at_order = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f"Item {self.item_id} in Order {self.order.id}"
+        return f"Item {self.item_id} in Order {self.order.order_id}"
     
