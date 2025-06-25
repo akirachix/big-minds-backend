@@ -1,8 +1,9 @@
 from django.db import models
+from orders.models import Order
 
 class Payment(models.Model):
     payment_id = models.AutoField(primary_key=True)
-    # order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments', null= True, blank = True)
     method = models.CharField(max_length=100)
     status = models.CharField(max_length=100)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
