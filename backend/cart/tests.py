@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from user.models import Buyer
 from products.models import Product
 from cart.models import Cart, CartItem
@@ -54,3 +55,7 @@ class CartModelTest(TestCase):
         )
         self.assertEqual(self.cart.items.count(), 2)
         self.assertIn(cart_item2, self.cart.items.all())
+
+
+# Create your tests here.
+
