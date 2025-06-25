@@ -5,7 +5,7 @@ from products.models import Product
 FREQUENCY_CHOICES = [
     ('weekly', 'Weekly'),
     ('twice_a_month', 'Twice a Month'),
-    ('monthly', 'Monthly'),
+    ('monthly', 'onthly'),
 ]
 
 UNIT_CHOICES = [
