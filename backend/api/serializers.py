@@ -27,3 +27,18 @@ class VendorProductSerializer(serializers.ModelSerializer):
             'product_ddetails_id', 'vendor', 'vendor_id', 'product', 'product_id',
             'price', 'quantity', 'description', 'added_on', 'updated_at'
         ]
+from cart.models import Cart, CartItem
+
+class CartItemSerializer(serializers.ModelSerializer):
+    # product_name = serializers.CharField(source="product.name", read_only=True)
+    class Meta:
+        model = CartItem
+        fields ="__all__"
+
+class CartSerializer(serializers.ModelSerializer):
+    # items = CartItemSerializer(many=True, read_only=True)
+    # customer_name = serializers.CharField(source="customer.name", read_only=True)
+    class Meta:
+        model = Cart
+        fields ="__all__"
+
