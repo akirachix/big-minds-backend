@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'product',
     'users',
     'rest_framework',
-    'orders',
+    'orders.apps.OrdersConfig',
     'subscription',
     'payment',
     'api',
@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django_filters',
     'longitude',
     "corsheaders",
-
 ]
 
 
@@ -48,8 +47,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
 ]
 ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
@@ -106,5 +103,25 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
+import os
+from pathlib import Path
+from decouple import config
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+LIPANAMPESA_SHORTCODE = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919' 
+
+LIPANAMPESA_PASSKEY = config('LIPANAMPESA_PASSKEY', default='bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919')
+CONSUMER_KEY = 'KwMAFoMuUPpDbQ8dgsxUtpXkzcTovdvys6Yc0FGic1tZwnmo'
+CONSUMER_SECRET = 'a6XQ14MfEgiDudlwXRCGmuxAyJCse56ChbWpZrGcwfL1nGmAHCt7CiypOJAcoh2T'
+# LIPANAMPESA_SHORTCODE = '174379'
+BUSINESS_SHORT_CODE = '174379'
+TRANSACTION_TYPE = 'CustomerBuyGoodsOnline'
+CALL_BACK_URL = 'https://b968-41-90-172-243.ngrok-free.app'
+ACCOUNT_REFERENCE = 'CompanyXLTD'
+TRANSACTION_DESCRIPTION = 'Payment of x'
+ACCESS_TOKEN_URL = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+API_RESOURCE_URL = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
