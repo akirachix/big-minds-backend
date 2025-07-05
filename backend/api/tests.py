@@ -118,7 +118,6 @@ class ScheduledItemAPITest(APITestCase):
             "unit": "kg"
         }
         response = self.client.post(url, data)
-        print("ScheduledItem create:", response.status_code, response.data)  # For debugging 400 errors
         self.assertEqual(response.status_code, 201)
         self.assertEqual(ScheduledItem.objects.count(), 1)
 
@@ -132,7 +131,7 @@ class OrderAPITest(APITestCase):
         )
 
     def test_create_order(self):
-        url = reverse('orders_api-list')
+        url = reverse('orders-list')
         data = {
             "vendor": self.vendor.pk,
             "buyer": self.buyer.pk,
@@ -159,7 +158,7 @@ class OrderItemAPITest(APITestCase):
         )
 
     def test_create_order_item(self):
-        url = reverse('backend_order-item-list')
+        url = reverse('order-items-list')
         data = {
             "order": self.order.pk,
             "product_id": self.product.pk,
@@ -194,16 +193,122 @@ class UserAPITest(APITestCase):
         self.assertGreaterEqual(len(response.data), 1)
 
 class PaymentAPITest(APITestCase):
+    def setUp(self):
+        self.vendor = User.objects.create(
+            name="Vendor", phone_number="0700000044", password_hash="h", location="Loc", type="vendor", till_number=123, shop_name="Shop"
+        )
+        self.buyer = User.objects.create(
+            name="Buyer", phone_number="0700000033", password_hash="h", location="Loc", type="customer"
+        )
+        self.product = Product.objects.create(
+            name="Apple", category="Fruit", product_image="img.com/apple.jpg", unit="kg"
+        )
+        self.order = Order.objects.create(
+            vendor=self.vendor, buyer=self.buyer, total_price=100.00, status="pending"
+        )
+        self.payment = Payment.objects.create(
+            order=self.order,
+            method="M-Pesa",
+            status="pending",
+            amount="100.00",
+            merchant_request_id="merchant123",
+            checkout_request_id="checkout123"
+        )
+
     def test_create_payment(self):
         url = reverse('payments-list')
         data = {
-            "method": "Mpesa",
-            "status": "paid",
-            "amount": Decimal("100.00"),
+            "order": self.order.pk,
+            "method": "M-Pesa",
+            "status": "pending",
+            "amount": "100.00",
+            "merchant_request_id": "merchantABC",
+            "checkout_request_id": "checkoutABC",
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(Payment.objects.count(), 1)
+        self.assertEqual(Payment.objects.count(), 2)
+        payment = Payment.objects.get(merchant_request_id="merchantABC")
+        self.assertEqual(payment.amount, self.order.total_price)
+        self.assertEqual(payment.status, "pending")
+
+    def test_list_payments(self):
+        url = reverse('payments-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertGreaterEqual(len(response.data), 1)
+        self.assertIn("merchant123", [p["merchant_request_id"] for p in response.data])
+
+    def test_retrieve_payment(self):
+        url = reverse('payments-detail', args=[self.payment.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["payment_id"], self.payment.pk)
+        self.assertEqual(response.data["merchant_request_id"], "merchant123")
+
+    def test_update_payment(self):
+        url = reverse('payments-detail', args=[self.payment.pk])
+        data = {
+            "status": "success"
+        }
+        response = self.client.patch(url, data)
+        self.assertEqual(response.status_code, 200)
+        self.payment.refresh_from_db()
+        self.assertEqual(self.payment.status, "success")
+
+    def test_full_update_payment(self):
+        url = reverse('payments-detail', args=[self.payment.pk])
+        new_order = Order.objects.create(
+            vendor=self.vendor, buyer=self.buyer, total_price=150.00, status="pending"
+        )
+        data = {
+            "order": new_order.pk,
+            "method": "Card",
+            "status": "failed",
+            "amount": "150.00",
+            "merchant_request_id": "merchantX",
+            "checkout_request_id": "checkoutX"
+        }
+        response = self.client.put(url, data)
+        self.assertEqual(response.status_code, 200)
+        self.payment.refresh_from_db()
+        self.assertEqual(self.payment.order.pk, new_order.pk)
+        self.assertEqual(self.payment.status, "failed")
+        self.assertEqual(self.payment.amount, new_order.total_price)
+
+    def test_delete_payment(self):
+        url = reverse('payments-detail', args=[self.payment.pk])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(Payment.objects.filter(pk=self.payment.pk).exists())
+
+    def test_create_payment_missing_required(self):
+        url = reverse('payments-list')
+        data = {
+            # missing merchant_request_id, which is required
+            "order": self.order.pk,
+            "method": "M-Pesa",
+            "status": "pending",
+            "amount": "100.00",
+            "checkout_request_id": "uniqueY"
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("merchant_request_id", response.data)
+
+    def test_create_payment_duplicate_merchant(self):
+        url = reverse('payments-list')
+        data = {
+            "order": self.order.pk,
+            "method": "M-Pesa",
+            "status": "pending",
+            "amount": "100.00",
+            "merchant_request_id": "merchant123",  # already exists
+            "checkout_request_id": "uniqueZ"
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("merchant_request_id", response.data)
 
 class CartAPITest(APITestCase):
     def setUp(self):
@@ -238,4 +343,4 @@ class CartItemAPITest(APITestCase):
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(CartItem.objects.count(), 1)
-        
+

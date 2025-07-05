@@ -1,21 +1,45 @@
 from rest_framework import serializers
-from product.models import Product
+from product.models import Product, VendorProduct
 from users.models import User
 from payment.models import Payment
 from subscription.models import SubscriptionBox, ScheduledItem
 from orders.models import Order, OrderItem
 from cart.models import Cart, CartItem
-from product.models import Product, VendorProduct
+
+
+
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['product_id', 'name', 'category', 'product_image', 'unit']
 
+class VendorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['user_id', 'name']
+
+class VendorProductSerializer(serializers.ModelSerializer):
+    vendor = VendorSerializer(read_only=True)
+    vendor_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.filter(type='vendor'), source='vendor', write_only=True
+    )
+    product = ProductSerializer(read_only=True)
+    product_id = serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.all(), source='product', write_only=True
+    )
+
+    class Meta:
+        model = VendorProduct
+        fields = [
+            'product_details_id', 'vendor', 'vendor_id', 'product', 'product_id',
+            'price', 'quantity', 'description', 'added_on', 'updated_at'
+        ]
+
 class CartItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
     product_name = serializers.CharField(write_only=True)
-    customer_name = serializers.CharField(write_only=True)  
+    customer_name = serializers.CharField(write_only=True)
     cart_item_id = serializers.IntegerField(read_only=True)
     quantity = serializers.IntegerField()
     added_at = serializers.DateTimeField(read_only=True)
@@ -140,32 +164,27 @@ class CartSerializer(serializers.ModelSerializer):
         representation['customer_id'] = instance.customer.user_id if instance.customer else None
         return representation
 
-class VendorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['user_id', 'name']
+class MpesaPaymentSerializer(serializers.Serializer):
+     class Meta:
+        model = Payment
+        fields = '__all__'
 
-class VendorProductSerializer(serializers.ModelSerializer):
-    vendor = VendorSerializer(read_only=True)
-    vendor_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.filter(type='vendor'), source='vendor', write_only=True
-    )
-    product = ProductSerializer(read_only=True)
-    product_id = serializers.PrimaryKeyRelatedField(
-        queryset=Product.objects.all(), source='product', write_only=True
-    )
-
-    class Meta:
-        model = VendorProduct
-        fields = [
-            'product_details_id', 'vendor', 'vendor_id', 'product', 'product_id',
-            'price', 'quantity', 'description', 'added_on', 'updated_at'
-        ]
+class STKPushSerializer(serializers.Serializer):
+    phone_number = serializers.CharField()
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+    account_reference = serializers.CharField()
+    transaction_desc = serializers.CharField()
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        fields = ['payment_id', 'method', 'status', 'amount', 'created_at']
+        fields = [
+            'payment_id', 'order', 'method', 'status', 'amount',
+            'merchant_request_id', 'checkout_request_id', 'result_code',
+            'result_desc', 'mpesa_receipt_number', 'phone_number',
+            'transaction_date', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ['payment_id', 'created_at', 'updated_at']
 
 class SubscriptionBoxSerializer(serializers.ModelSerializer):
     class Meta:
@@ -184,7 +203,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class OrderItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
     product_id = serializers.PrimaryKeyRelatedField(
@@ -200,6 +218,7 @@ class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(source='orderitem_set', many=True, read_only=True)
     vendor_name = serializers.CharField(source='vendor.name', read_only=True)
     buyer_name = serializers.CharField(source='buyer.name', read_only=True)
+    total_price = serializers.DecimalField(read_only=True, max_digits=10, decimal_places=2)
     class Meta:
         model = Order
         fields = "__all__"

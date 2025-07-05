@@ -35,7 +35,7 @@ class SubscriptionBox(models.Model):
         null=True
     )
 
-    # Removed the redundant 'user' field
+
 
     name = models.CharField(max_length=100)
     frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES)
@@ -44,7 +44,6 @@ class SubscriptionBox(models.Model):
     status = models.CharField(max_length=100)
 
     def __str__(self):
-        # Use buyer for the string representation
         return f"Subscription {self.name} for {self.buyer.name}"
 
     def clean(self):

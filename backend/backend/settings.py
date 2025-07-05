@@ -6,6 +6,10 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import dj_database_url
+import os
+from pathlib import Path
+from decouple import config
 from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -15,7 +19,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+(a39&q@ainwdm^ldn)d@5cot*ba+1m))h$d)tm-5*#$$8bby&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['backend.herokuapp.com',
+                 'safi-greens-app.onrender.com',
+                 '127.0.0.1']
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -27,7 +33,7 @@ INSTALLED_APPS = [
     'product',
     'users',
     'rest_framework',
-    'orders',
+    'orders.apps.OrdersConfig',
     'subscription',
     'payment',
     'api',
@@ -36,9 +42,10 @@ INSTALLED_APPS = [
     'django_filters',
     'longitude',
     "corsheaders",
-
 ]
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -48,9 +55,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
+
 ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
@@ -71,13 +78,22 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
 
-   'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'safi_greens',
+        'USER': 'student',
+        'PASSWORD': 'B!ny@m#y1.',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
+db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+if db_from_env:
+    DATABASES['default'].update(db_from_env)
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
@@ -107,4 +123,24 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 
+
 CORS_ALLOW_ALL_ORIGINS = True
+
+LIPANAMPESA_SHORTCODE = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919' 
+
+LIPANAMPESA_PASSKEY = config('LIPANAMPESA_PASSKEY', default='bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919')
+CONSUMER_KEY = 'KwMAFoMuUPpDbQ8dgsxUtpXkzcTovdvys6Yc0FGic1tZwnmo'
+CONSUMER_SECRET = 'a6XQ14MfEgiDudlwXRCGmuxAyJCse56ChbWpZrGcwfL1nGmAHCt7CiypOJAcoh2T'
+# LIPANAMPESA_SHORTCODE = '174379'
+BUSINESS_SHORT_CODE = '174379'
+TRANSACTION_TYPE = 'CustomerBuyGoodsOnline'
+CALL_BACK_URL = 'https://b968-41-90-172-243.ngrok-free.app'
+ACCOUNT_REFERENCE = 'CompanyXLTD'
+TRANSACTION_DESCRIPTION = 'Payment of x'
+ACCESS_TOKEN_URL = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+API_RESOURCE_URL = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
